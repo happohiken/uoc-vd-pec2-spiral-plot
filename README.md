@@ -18,3 +18,6 @@ Clona el repositorio y ejecuta desde la raiz:
 python3  -m http.server 8000
 ```
 
+## Visualización online
+ 
+Se puede acceder a la visualización online desde https://happohiken.github.io/uoc-vd-pec2-spiral-plot/
