@@ -1,8 +1,8 @@
-var width = 500,
-      height = 500,
+var width = 800,
+      height = 800,
       start = 0,
-      end = 2.25,
-      numSpirals = 3
+      end = 2,
+      numSpirals = 3,
       margin = {top:50,bottom:50,left:50,right:50};
 
     var theta = function(r) {
@@ -56,38 +56,71 @@ var width = 500,
       .style("stroke", "steelblue");
 
     var spiralLength = path.node().getTotalLength(),
-        N = 365,
-        barWidth = (spiralLength / N) - 1;
+      N = 365 * 3,
+      barWidth = Math.max(1, (spiralLength / N) * 0.9);
     
     // cargamos datos
-    d3.csv("data/tasf-thgu.csv", function(error, rows) {
+    d3.csv("data/tasf-thgu-2023-2025.csv", function(error, rows) {
       if (error) throw error;
       // parseamos
       var parseDate = d3.timeParse("%Y-%m-%d");
+
+      function isLeapDay(date) {
+        return date.getMonth() === 1 && date.getDate() === 29;
+      }
+
+      function dayOfYearNoLeap(date) {
+        var startOfYear = new Date(date.getFullYear(), 0, 1);
+        var dayIndex = d3.timeDay.count(startOfYear, date); // 0-based
+
+        // En 2024, restamos 1 a todo lo que venga después del 29 de febrero
+        if (date.getFullYear() === 2024 && date > new Date(2024, 1, 29)) {
+          dayIndex -= 1;
+        }
+
+        return dayIndex;
+      }
+
+
       // recorremos en bucle
       var someData = rows.map(function(d) {
-        // calculamos dato
         var values = d3.range(1, 25)
           .map(function(h) { return d["h" + ("0" + h).slice(-2)]; })
           .filter(function(v) { return v !== "" && v != null && !isNaN(+v); })
           .map(Number);
 
         var date = parseDate(d.data.slice(0, 10));
-        // devolvemos dato
+        if (!date) return null;
+
+        var year = date.getFullYear();
+        if (year < 2023 || year > 2025) return null;
+
+        // Excluimos solo el 29 de febrero de 2024 para mantener la alineación anual
+        if (isLeapDay(date)) return null;
+
+        var yearOffset = (year - 2023) * 365;
+        var dayIndex = dayOfYearNoLeap(date);
+
         return {
           date: date,
+          year: year,
           value: values.length ? d3.mean(values) : null,
           hours: values.length,
-          group: date.getMonth()
+          group: date.getMonth(),
+          pos: yearOffset + dayIndex
         };
-      }).sort(function(a, b) { return a.date - b.date; });
+      }).filter(function(d) {
+        return d !== null;
+      }).sort(function(a, b) {
+        return a.date - b.date;
+      });
 
 
 
-    var timeScale = d3.scaleTime()
-      .domain(d3.extent(someData, function(d){
-        return d.date;
-      }))
+    var totalDays = 365 * 3;
+
+    var posScale = d3.scaleLinear()
+      .domain([0, totalDays - 1])
       .range([0, spiralLength]);
     
     // yScale for the bar height
@@ -103,9 +136,9 @@ var width = 500,
       .append("rect")
       .attr("x", function(d,i){
         
-        var linePer = timeScale(d.date),
-            posOnLine = path.node().getPointAtLength(linePer),
-            angleOnLine = path.node().getPointAtLength(linePer - barWidth);
+        var linePer = posScale(d.pos),
+          posOnLine = path.node().getPointAtLength(linePer),
+          angleOnLine = path.node().getPointAtLength(Math.max(0, linePer - barWidth));
       
         d.linePer = linePer; // % distance are on the spiral
         d.x = posOnLine.x; // x postion on the spiral
