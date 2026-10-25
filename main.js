@@ -59,6 +59,36 @@ var width = 800,
       N = 365 * 3,
       barWidth = Math.max(1, (spiralLength / N) * 0.9);
     
+    // Tabla que relaciona el ángulo de la espiral con su longitud
+    var cumulativeLengths = [0];
+
+    for (var i = 1; i < points.length; i++) {
+      var p0 = points[i - 1];
+      var p1 = points[i];
+
+      var x0 = radius(p0) * Math.sin(theta(p0));
+      var y0 = -radius(p0) * Math.cos(theta(p0));
+      var x1 = radius(p1) * Math.sin(theta(p1));
+      var y1 = -radius(p1) * Math.cos(theta(p1));
+
+      var distance = Math.hypot(x1 - x0, y1 - y0);
+
+      cumulativeLengths.push(cumulativeLengths[i - 1] + distance);
+    }
+
+    function lengthForDay(pos) {
+      // 365 días corresponden exactamente a una vuelta
+      var sample = (pos / (365 * 3)) * (points.length - 1);
+      var i = Math.min(Math.floor(sample), points.length - 2);
+      var fraction = sample - i;
+
+      var length = cumulativeLengths[i] * (1 - fraction)
+                + cumulativeLengths[i + 1] * fraction;
+
+      return length / cumulativeLengths[cumulativeLengths.length - 1]
+          * spiralLength;
+    }
+
     // cargamos datos
     d3.csv("data/tasf-thgu-2023-2025.csv", function(error, rows) {
       if (error) throw error;
@@ -119,9 +149,9 @@ var width = 800,
 
     var totalDays = 365 * 3;
 
-    var posScale = d3.scaleLinear()
-      .domain([0, totalDays - 1])
-      .range([0, spiralLength]);
+    // var posScale = d3.scaleLinear()
+    //   .domain([0, totalDays - 1])
+    //   .range([0, spiralLength]);
     
     // yScale for the bar height
     var yScale = d3.scaleLinear()
@@ -136,7 +166,8 @@ var width = 800,
       .append("rect")
       .attr("x", function(d,i){
         
-        var linePer = posScale(d.pos),
+        // var linePer = posScale(d.pos),
+        var linePer = lengthForDay(d.pos),
           posOnLine = path.node().getPointAtLength(linePer),
           angleOnLine = path.node().getPointAtLength(Math.max(0, linePer - barWidth));
       
