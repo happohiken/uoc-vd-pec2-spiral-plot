@@ -20,7 +20,7 @@ https://analisi.transparenciacatalunya.cat/d/tasf-thgu
 
 Estación: Barcelona-Eixample (08019043).
 
-Periodo: 1 de enero a 31 de diciembre de 2025.
+Periodo: 1 de enero de 2023 a 31 de diciembre de 2025.
 
 ## Finalidad
 

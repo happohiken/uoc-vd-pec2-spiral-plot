@@ -2,12 +2,12 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <title>Concentración NO₂ en Barcelona-Eixample (2025) | Spiral Plot</title>
+    <title>Concentración NO₂ en Barcelona-Eixample (2023-2025) | Spiral Plot</title>
       <link rel="stylesheet" type="text/css" href="style.css"/>
       <script data-require="d3@4.0.0" data-semver="4.0.0" src="https://d3js.org/d3.v4.js"></script>
   </head>
   <body>
-  <h1>Evolución de la concentración de NO₂ en Barcelona durante 2025</h1>
+  <h1>Evolución de la concentración de NO₂ en Barcelona durante 2023-2025</h1>
   <p>Concentración media diaria de dióxido de nitrógeno (NO₂), medida en la estación Barcelona-Eixample, representada mediante un gràfico espiral.</p>
 	<div id="chart"></div>
     <script type="text/javascript" src="main.js"></script>
@@ -17,7 +17,8 @@
     </h2>
     <ul>
       <li><b>Longitud de las barras:</b> concentración media diaria de NO₂, expresada en µg/m³. Cuanto más larga es la barra, mayor es la concentración.</li>
-      <li><b>Recorrido de la espiral:</b> los días avanzan desde el centro hacia el exterior, del 1 de enero al 31 de diciembre de 2025</li>
+      <li><b>Recorrido de la espiral:</b> los días avanzan desde el centro hacia el exterior, del 1 de enero de 2023 al 31 de diciembre de 2025. Cada vuelta completa representa un año.</li>
+      <li><b>Comparación de ciclos:</b> los mismos periodos de los tres años quedan alineados, facilitando la identificación de patrones estacionales e interanuales.</li>
       <li><b>Colores:</b> azul (invierno), verde (primavera), rojo (verano) y naranja (otoño). Los meses se diferencian por una ligera variación de la luminosidad del color.</li>
       <li><b>Gris:</b>  días sin mediciones disponibles en el repositorio original.</li>
       <li><b>Interacción:</b> al situar el cursor sobre una barra se muestran la fecha, la concentración y el número de mediciones</li>
@@ -28,7 +29,7 @@
     <p>
       Generalitat de Catalunya — Xarxa de Vigilància i Previsió de la Contaminació Atmosfèrica (XVPCA). Conjunto de datos: Qualitat de l'aire als punts de mesurament automàtics.
       <br>
-      Estación Barcelona-Eixample (08019043). Contaminante: NO₂. Periodo: 2025.
+      Estación Barcelona-Eixample (08019043). Contaminante: NO₂. Periodo: 2023-2025.
     </p>
     <p>
       <a href="https://analisi.transparenciacatalunya.cat/d/tasf-thgu" target="_blank">https://analisi.transparenciacatalunya.cat/d/tasf-thgu</a>
@@ -40,7 +41,7 @@
 
     <p>
       Los datos originales contienen mediciones horarias de dióxido
-      de nitrógeno (NO₂) de la estación Barcelona-Eixample durante 2025.
+      de nitrógeno (NO₂) de la estación Barcelona-Eixample durante los años 2023, 2024 y 2025.
     </p>
     <p>
       Se carga directamente el CSV original y secalcula,
@@ -49,9 +50,14 @@
       ni se exige un número mínimo de mediciones por día.
     </p>
     <p>
-      359 de los 365 días del año tiene de al menos una medición.
-      Los seis días restantes se marcan como datos ausentes y
-      se representan en color gris, sin asignarles un valor artificial de cero.
+      El conjunto original contiene 1.096 registros diarios, 
+      correspondientes a tres años completos. Para construir la visualización 
+      excluimos el 29 de febrero de 2024, obteniendo tres ciclos de 365 días 
+      que permiten alinear las fechas en las tres vueltas de la espiral.
+    </p>
+    <p>
+      La longitud de las barras muestra la concentración media diaria. Los días sin 
+      mediciones se marcan en gris.
     </p>
     <p>
       Los valores se expresan en microgramos por metro cúbico (µg/m³).
